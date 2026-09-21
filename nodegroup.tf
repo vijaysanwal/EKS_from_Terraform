@@ -4,8 +4,8 @@ resource "aws_eks_node_group" "nodes" {
 
   node_role_arn = aws_iam_role.eks_nodes.arn
 
-  subnet_ids = aws_subnet.private[*].id
-
+  subnet_ids     = aws_subnet.private[*].id
+  version        = "1.36"
   instance_types = ["t3.medium"]
 
   scaling_config {
