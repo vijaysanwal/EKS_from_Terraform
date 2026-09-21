@@ -21,7 +21,7 @@ resource "aws_subnet" "public" {
   tags = {
     Name                                      = "eks-public-subnet-${count.index + 1}"
     "kubernetes.io/role/elb"                  = "1"
-    "kubernetes.io/cluster/${aws_eks_cluster.test.name}" = "shared"
+    "kubernetes.io/cluster/test-eks-cluster" = "shared"
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_subnet" "private" {
   tags = {
     Name                                      = "eks-private-subnet-${count.index + 1}"
     "kubernetes.io/role/internal-elb"         = "1"
-    "kubernetes.io/cluster/${aws_eks_cluster.test.name}" = "shared"
+    "kubernetes.io/cluster/test-eks-cluster" = "shared"
   }
 }
 
@@ -53,10 +53,15 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
   }
+
+  tags = {
+    Name = "eks-public-rt"
+  }
 }
 
 resource "aws_route_table_association" "public" {
-  count          = 2
+  count = 2
+
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
